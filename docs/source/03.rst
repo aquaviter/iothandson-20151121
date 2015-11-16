@@ -6,3 +6,30 @@ OpenBlocks IoT BX1 設定
 
 TODO: 目次
 
+BX1の取り扱い (電源ON/OFF・再起動、SIM挿入)
+===========================================
+
+BX1は給電開始と共に電源ONとなります。USBケーブルを接続すると起動開始です
+
+INITボタンや電源ボタンはOSのシャットダウンと再起動に利用されますので、必要時以外は押さないでください
+
+部位の名前やSIM挿入方法については、下記を参照してください
+
+.. image:: images/bx1_1-1_bx1.png
+
+(`OpenBlocks IoT Family WEB UI セットアップガイド P7 <http://openblocks.plathome.co.jp/common/pdf/OpenBlocksIoTSeriseSetupGuide1_0_5.pdf#page=7>`_ より抜粋)
+
+ステータスインジケータ (LEDの表示色)
+------------------------------------
+
+BX1は *STATUS* のLEDにて状態を把握することができます
+
+本ハンズオンにおいては、起動後は **白色、水色、青色** が望ましく、それ以外の色の場合は不具合がある可能性がありますので、チューターにご相談ください
+
+具体的なLED色と状態については、下記を参照してください
+
+.. image:: images/bx1_1-2_led.png
+
+(`OpenBlocks IoT Family WEB UI セットアップガイド P7 <http://openblocks.plathome.co.jp/common/pdf/OpenBlocksIoTSeriseSetupGuide1_0_5.pdf#page=7>`_ より抜粋)
+
+
