@@ -99,7 +99,7 @@ CC2451を検出して使用できるようにする
 #. **Bluetooth LEデバイス検出** の [検出] をクリック
 #. 一覧の中から自分のデバイスを探し **使用設定** にチェックをして [保存]
 
-※ Bluetooth デバイス検出の方でなく、 **Bluetooth LEデバイス検出** を押すようにしてください
+NOTE: Bluetooth デバイス検出の方でなく、 **Bluetooth LEデバイス検出** を押すようにしてください
 
 .. image:: images/bx1_3-2_ble-list.png
 
@@ -132,7 +132,7 @@ BX1のデータ収集機能を開始する
 #. WebUIから [サービス] - [基本] を表示
 #. **データ収集** における **データ収集** ならびに **PD Handler** をそれぞれ **使用する** にして [保存]
 
-※ "PD Handler" は "データ収集" を <使用する> にすると表示されます
+NOTE: "PD Handler" は "データ収集" を <使用する> にすると表示されます
 
 .. image:: images/bx1_4-1_collector-start.png
 
@@ -188,7 +188,7 @@ pd-handler-stdout.log に ``timeout: ...`` などと表示され、JSONデータ
 
 CC2451 の電源を入れなおすことで回復できる事があります
 
-※CC2451のLEDが一瞬だけ点滅し、消灯したら接続が確立している合図です。しばらく経ってから pd-handler-stdout.log を確認してみてください
+NOTE: CC2451のLEDが一瞬だけ点滅し、消灯したら接続が確立している合図です。しばらく経ってから pd-handler-stdout.log を確認してみてください
 
 SORACOM Air
 ===========
@@ -217,4 +217,90 @@ APN設定
 #. 再起動を実施します (最後にに確認ダイアログがでるので見逃さないようにしてください)
 
 .. image:: images/bx1_6-2_reboot.png
+
+AWS IoT
+=======
+
+いよいよ CC2451 のデータを SORACOM Air を経由して AWS IoT に送信します
+
+準備
+----
+
+**AWS IoTから取得しておくもの**
+
+- 証明書(Certificate)ファイル <拡張子 .pem.crt>
+- プライベートキー(PrivateKey)ファイル <拡張子 .pem.key>
+- エンドポイントURL (``aws iot describe-endpoint`` 等)
+
+**その他取得しておくもの**
+
+- `root certificateファイル <https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem>`_
+
+NOTE: ファイル名にスペースが含まれています。BX1ではファイル名にスペース文字が使用できないため、処置をしておいてください (本例では スペースを ``_`` に変更しています)
+
+**決めておくこと**
+
+- 送信先トピック名 (本例では ``handson/device01`` としています)
+
+BX1設定
+-------
+
+ファイルアップロード
+~~~~~~~~~~~~~~~~~~~~
+
+まず、 AWS IoTの証明書ファイル、プライベートキーファイル並びにルート証明書ファイルの3つをBX1にアップロードします
+
+#. WebUIから [システム] - [ファイル管理] を表示
+#. 本画面からファイルを3つ、それぞれアップロード
+
+すべてアップロードされると、下記のような画面となります
+
+.. image:: images/bx1_7-1_file-upload.png
+
+システム全体設定
+~~~~~~~~~~~~~~~~
+
+#. WebUIから [サービス] - [収集設定] を表示
+#. **AWS IoT** を **使用する** (クリックで設定が展開します)
+#. 下記の通り設定します
+
+- 送信先ホスト: <エンドポイント>を設定
+- root証明書 : ``/var/webui/upload_dir/VeriSign-Class_3-Public-Primary-Certification-Authority-G5.pem``
+
+NOTE: 先のファイルアップロード画面でアップロードされたファイルは BX1内の ``/var/webui/upload_dir/`` にアップロードされるので、それ以下のパスを指定することでファイルの読み込みが可能です
+
+.. image:: images/bx1_7-2-1_awsiot.png
+
+保存せず、ページ下部へ移動します
+
+デバイス毎設定
+~~~~~~~~~~~~~~
+
+#. dev_le_0000001 の **送信先設定** で **AWSIOT** にチェックを付けます (クリックで設定が展開します)
+#. 下記の通り設定します
+
+* トピック名 : ``handson/device01``
+* 証明書(AWS IoT) : ``/var/webui/upload_dir/(アップロードした .pem.crtファイル)``
+* プライベートキー(AWS IoT) : ``/var/webui/upload_dir/(アップロードした .pem.keyファイル)``
+
+.. image:: images/bx1_7-2-2_awsiot.png
+
+デバッグとトラブルシュート
+--------------------------
+
+送信状況は データ収集状況の確認 を使用してください
+
+またAWS IoT側に送信されているかの確認には、CloudWatchを使用する他、 **mosquitto_sub** コマンドが使えます
+
+``mosquitto_sub --cafile VeriSign-Class_3-Public-Primary-Certification-Authority-G5.pem --cert ANY-certificate.pem.crt --key ANY-private.pem.key -h ANY.iot.ap-northeast-1.amazonaws.com -p 8883 -q 1 -d -t handson/device01``
+
+mosquitto_sub で サーバに接続できない
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+証明書がINACTIVEである可能性があります。AWS IoT上で当該する証明書をActivateしてください
+
+mosquitto_sub で ``CONNECT`` が連続で表示され、待ち受けられない
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+証明書に有効なポリシーがアタッチされていない可能性があります。AWS IoT上で当該する証明書に有効なPolicyをattachしてください
 
