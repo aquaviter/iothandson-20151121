@@ -319,6 +319,7 @@ mosquitto_sub で ``CONNECT`` が連続で表示され、待ち受けられな�
 #. BX1 Firmware バージョン
 #. 管理者アカウント作成
 #. Wi-Fi AP設定
+#. SSH server設定
 
 BX1 Firmware バージョン
 -----------------------
@@ -338,4 +339,14 @@ Wi-Fi AP設定
 
 - 標準: SSID = *iotfamily_MACADDRESS*, Password = *openblocks*
 - 今回: SSID = *_HOSTID_1121handson*, Password = *HOSTID* (+ Wi-Fiチャネル 混線回避のため個別設定済)
+
+SSH server設定
+--------------
+
+- 標準: SSHアクセス不可
+- 今回: 〃可
+
+- Address: 192.168.254.254:22
+- ID: root
+- Password: 0BSI0T (ゼロ ビー エス アイ ゼロ ティー)
 
