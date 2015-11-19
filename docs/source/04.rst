@@ -1,3 +1,15 @@
 ==================
- SORACOM BEAM設定
+データ送信確認
 ==================
+
+BX1からデータが正常に送信されているかを確認します。
+
+AWSマネージメントコンソールから"DynamoDB"をクリックします。左のメニューから"Tables"をクリックし、リストからテーブル名"IoTHandsonRawData"をクリックします。
+
+.. image:: images/awsiot-show-dynamodb-1.png
+
+画面右から"Items"タブをクリックし、テーブルにセンサーから受信したデータが保存されていることを確認します。
+
+.. image:: images/awsiot-show-dynamodb-2.png
+
+           
